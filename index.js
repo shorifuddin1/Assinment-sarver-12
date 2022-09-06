@@ -15,8 +15,6 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.aoo1b.mongodb.net/?retryWrites=true&w=majority`;
 
-
-
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next){
@@ -114,7 +112,7 @@ async function run() {
   //booking
   app.get('/booking/:email', async (req, res)=>{
     const email = req.params.email;
-    console.log(email)
+    // console.log(email)
     const result = await bookingCollection.find({email : email}).toArray()
     res.send(result)
   })
@@ -123,6 +121,7 @@ async function run() {
   app.post('/product', async (req, res) =>{
     const newProduct = req.body;
     const result = await productCollection.insertOne(newProduct)
+    // console.log(result)
     res.setEncoding(result)
   })
 
@@ -133,8 +132,14 @@ async function run() {
     res.setEncoding(result)
   })
 
-  
-
+  //Delete
+  app.delete("/booking/:id",async(req, res)=>{
+    const id = req.params.id 
+    const query= {_id:ObjectId(id)}
+    const result = await bookingCollection.deleteOne(query)
+    console.log(result)
+    res.send(result)
+  })
 
   // app.put('/api/users/profile', verifyUser, async (req, res) => {
   //   const data = req.body;
@@ -145,7 +150,8 @@ async function run() {
   //   }
   //   const result = await profile.updateOne(filter, updateDoc, options);
   //   res.send(result);
-   
+  
+  // })
 }
   finally {
 
